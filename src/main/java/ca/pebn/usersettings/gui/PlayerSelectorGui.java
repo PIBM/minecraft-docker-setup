@@ -1,3 +1,4 @@
+
 package ca.pebn.usersettings.gui;
 
 import ca.pebn.usersettings.data.UserSettingsData;
@@ -103,10 +104,17 @@ public class PlayerSelectorGui implements InventoryHolder {
             lore.add(Component.text("Status: ", NamedTextColor.GRAY)
                     .append(op.isOnline() ? Component.text("ONLINE", NamedTextColor.GREEN) : Component.text("OFFLINE", NamedTextColor.RED)));
             lore.add(Component.empty());
+
             lore.add(Component.text("Hotbar: ", NamedTextColor.GRAY)
                     .append(data.isKeepHotbar() ? Component.text("Keep", NamedTextColor.GREEN) : Component.text("Drop", NamedTextColor.RED)));
             lore.add(Component.text("Backpack: ", NamedTextColor.GRAY)
                     .append(Component.text(data.getBackpackKeepMode().getDisplayName(), NamedTextColor.AQUA)));
+
+            lore.add(Component.text("Armor Mode: ", NamedTextColor.GRAY)
+                    .append(data.isKeepArmor() ? Component.text("Keep", NamedTextColor.GREEN) : Component.text("Drop", NamedTextColor.RED)));
+            lore.add(Component.text("Armor Dmg: ", NamedTextColor.GRAY)
+                    .append(Component.text(String.format("%.0f%%", data.getArmorDamagePercentage()), NamedTextColor.LIGHT_PURPLE)));
+
             lore.add(Component.text("EXP Loss: ", NamedTextColor.GRAY)
                     .append(Component.text(String.format("%.0f%% (%s)", data.getExpLossPercentage(), data.getExpLossType().getDisplayName()), NamedTextColor.LIGHT_PURPLE)));
             lore.add(Component.empty());

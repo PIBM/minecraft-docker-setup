@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -70,6 +71,42 @@ public class DeathEventListener implements Listener {
                     if (removeFromList(drops, item)) {
                         itemsToKeep.add(item);
                         keptSoFar++;
+                    }
+                }
+            }
+        }
+
+        // 3. Armor Durability Penalty and Retention (Slots 36 to 39)
+        double damagePercent = settings.getArmorDamagePercentage() / 100.0;
+
+        for (int slot = 36; slot <= 40; slot++) {
+            ItemStack item = inv.getItem(slot);
+            if (item != null && !item.getType().isAir()) {
+
+                // Always apply durability penalty first if the item can take damage
+                if (item.getItemMeta() instanceof Damageable damageable) {
+                    int maxDurability = item.getType().getMaxDurability();
+                    if (maxDurability > 0) {
+                        int currentDamage = damageable.getDamage();
+                        int addedDamage = (int) Math.round(maxDurability * damagePercent);
+                        int newDamage = currentDamage + addedDamage;
+
+                        // If the penalty breaks the item, destroy it completely (remove from drops too)
+                        if (newDamage >= maxDurability) {
+                            removeFromList(drops, item);
+                            inv.setItem(slot, null);
+                            continue;
+                        }
+
+                        damageable.setDamage(newDamage);
+                        item.setItemMeta(damageable);
+                    }
+                }
+
+                // Handle retention logic after the item has been damaged
+                if (settings.isKeepArmor()) {
+                    if (removeFromList(drops, item)) {
+                        itemsToKeep.add(item);
                     }
                 }
             }

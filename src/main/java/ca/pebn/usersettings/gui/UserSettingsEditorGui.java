@@ -107,6 +107,32 @@ public class UserSettingsEditorGui implements InventoryHolder {
         pctLore.add(Component.text("Right-Click: ", NamedTextColor.YELLOW).append(Component.text("-10% Loss", NamedTextColor.WHITE)));
         inventory.setItem(16, createItem(Material.REDSTONE, Component.text("EXP Loss Percentage", NamedTextColor.GOLD, TextDecoration.BOLD), pctLore));
 
+        // Slot 3: Keep Armor Toggle
+        boolean keepArmor = settings.isKeepArmor();
+        List<Component> keepArmorLore = new ArrayList<>();
+        keepArmorLore.add(Component.text("Status: ", NamedTextColor.GRAY)
+                .append(keepArmor ?
+                        Component.text("ENABLED (Armor is kept)", NamedTextColor.GREEN, TextDecoration.BOLD) :
+                        Component.text("DISABLED (Armor drops)", NamedTextColor.RED, TextDecoration.BOLD)));
+        keepArmorLore.add(Component.empty());
+        keepArmorLore.add(Component.text("Click: ", NamedTextColor.YELLOW)
+                .append(Component.text("Toggle Status", NamedTextColor.WHITE)));
+        inventory.setItem(3, createItem(Material.ANVIL, Component.text("Keep Armor on Death", NamedTextColor.GOLD, TextDecoration.BOLD), keepArmorLore));
+
+        // Slot 4: Armor Damage Percentage
+        double armorDmg = settings.getArmorDamagePercentage();
+        List<Component> armorDmgLore = new ArrayList<>();
+        armorDmgLore.add(Component.text("Durability Lost: ", NamedTextColor.GRAY)
+                .append(Component.text(String.format("%.0f%%", armorDmg), NamedTextColor.RED, TextDecoration.BOLD)));
+        armorDmgLore.add(Component.text("Durability Kept: ", NamedTextColor.GRAY)
+                .append(Component.text(String.format("%.0f%%", 100.0 - armorDmg), NamedTextColor.GREEN, TextDecoration.BOLD)));
+        armorDmgLore.add(Component.empty());
+        armorDmgLore.add(Component.text("Left-Click: ", NamedTextColor.YELLOW)
+                .append(Component.text("+1% Damage (Max 25%)", NamedTextColor.WHITE)));
+        armorDmgLore.add(Component.text("Right-Click: ", NamedTextColor.YELLOW)
+                .append(Component.text("-1% Damage (Min 0%)", NamedTextColor.WHITE)));
+        inventory.setItem(4, createItem(Material.FLINT, Component.text("Armor Damage Percentage", NamedTextColor.GOLD, TextDecoration.BOLD), armorDmgLore));
+
         // Slot 22: Back to Player List
         List<Component> backLore = new ArrayList<>();
         backLore.add(Component.text("Return to player selection", NamedTextColor.GRAY));

@@ -106,6 +106,26 @@ public class GuiListener implements Listener {
                     clicker.sendMessage(Component.text("EXP loss percentage set to: ", NamedTextColor.GRAY)
                             .append(Component.text(String.format("%.0f%%", pct), NamedTextColor.RED)));
                 }
+                case 3 -> { // Keep Armor Toggle (New)
+                    settings.setKeepArmor(!settings.isKeepArmor());
+                    settingsManager.saveSettings(settings);
+                    editorGui.refreshInventory();
+                    clicker.sendMessage(Component.text("Keep Armor status set to: ", NamedTextColor.GRAY)
+                            .append(settings.isKeepArmor() ? Component.text("ENABLED", NamedTextColor.GREEN) : Component.text("DISABLED", NamedTextColor.RED)));
+                }
+                case 4 -> { // Armor Damage Percentage Slider (New)
+                    double dmg = settings.getArmorDamagePercentage();
+                    if (event.isLeftClick()) {
+                        dmg = Math.min(25.0, dmg + 1.0);
+                    } else if (event.isRightClick()) {
+                        dmg = Math.max(0.0, dmg - 1.0);
+                    }
+                    settings.setArmorDamagePercentage(dmg);
+                    settingsManager.saveSettings(settings);
+                    editorGui.refreshInventory();
+                    clicker.sendMessage(Component.text("Armor durability damage percentage set to: ", NamedTextColor.GRAY)
+                            .append(Component.text(String.format("%.0f%%", dmg), NamedTextColor.RED)));
+                }
                 case 22 -> { // Back button
                     clicker.openInventory(new PlayerSelectorGui(settingsManager).getInventory());
                 }
