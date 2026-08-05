@@ -4,11 +4,12 @@ import ca.pebn.usersettings.data.UserSettingsData;
 import ca.pebn.usersettings.gui.PlayerSelectorGui;
 import ca.pebn.usersettings.gui.UserSettingsEditorGui;
 import ca.pebn.usersettings.storage.PlayerSettingsManager;
-import io.papermc.paper.adventure.PaperAdventure;
-import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import net.kyori.adventure.text.Component;
-import net.kyri.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -22,32 +23,38 @@ public class AdminCommand {
     }
 
     /**
-     * Creates a BasicCommand instance for registration with Paper 26.2's brigadier system.
+     * Compiles the command tree into a LiteralCommandNode acceptable by Paper 26.2's Registrar.
      */
-    public io.papermc.paper.command.brigadier.BasicCommand toBasic() {
+    public LiteralCommandNode<CommandSourceStack> getCommandNode() {
+        
         var editCommand = Commands.literal("edit")
-                .requires(source -> source.hasPermission("usersettings.admin"))
-                .argument(Commands.stringArgument("targetPlayer", (context, sender) -> {
-                    String playerName = context.getOrDefault("targetPlayer");
-                    
-                    if (!(sender instanceof Player player)) {
-                        PaperAdventure.broadcast(Component.text("Only players can open the GUI editor.", NamedTextColor.RED));
-                        return 0;
-                    }
+                .requires(source -> source.getSender().hasPermission("usersettings.admin"))
+                .then(Commands.argument("targetPlayer", StringArgumentType.string())
+                        .executes(context -> {
+                            // Extract command values cleanly out of the Brigadier context
+                            CommandSourceStack source = context.getSource();
+                            String playerName = context.getArgument("targetPlayer", String.class);
+                            
+                            if (!(source.getSender() instanceof Player player)) {
+                                source.getSender().sendMessage(Component.text("Only players can open the GUI editor.", NamedTextColor.RED));
+                                return 0;
+                            }
 
-                    OfflinePlayer target = findOfflinePlayer(playerName);
-                    UserSettingsData data = settingsManager.getSettings(target);
-                    player.openInventory(new UserSettingsEditorGui(target, data).getInventory());
-                    
-                    PaperAdventure.sender(sender).sendMessage(Component.text("Opening editor for " + playerName));
-                    return 1;
-                }));
+                            OfflinePlayer target = findOfflinePlayer(playerName);
+                            UserSettingsData data = settingsManager.getSettings(target);
+                            player.openInventory(new UserSettingsEditorGui(target, data).getInventory());
+                            
+                            source.getSender().sendMessage(Component.text("Opening editor for " + playerName, NamedTextColor.GREEN));
+                            return 1;
+                        }));
 
         var rootCommand = Commands.literal("usersettings")
-                .requires(source -> source.hasPermission("usersettings.admin"))
-                .executes((context, sender) -> {
-                    if (!(sender instanceof Player player)) {
-                        PaperAdventure.sender(sender).sendMessage(Component.text("Usage: /usersettes edit <player>", NamedTextColor.RED));
+                .requires(source -> source.getSender().hasPermission("usersettings.admin"))
+                .executes(context -> {
+                    CommandSourceStack source = context.getSource();
+                    
+                    if (!(source.getSender() instanceof Player player)) {
+                        source.getSender().sendMessage(Component.text("Usage: /usersettings edit <player>", NamedTextColor.RED));
                         return 0;
                     }
 
@@ -69,5 +76,4 @@ public class AdminCommand {
         }
         return target;
     }
-
 }
