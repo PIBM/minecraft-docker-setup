@@ -1,6 +1,9 @@
-.PHONY: all build up down logs restart clean help
+.PHONY: all build up down logs restart clean help rebuild
 
 all: build up
+
+## Rebuild and deploy the plugin in one go (Stop, Build, Start)
+rebuild: down build up
 
 ## Build the plugin inside Docker and extract usersettings.jar to root and build/libs folder
 build:
@@ -30,3 +33,4 @@ restart: down up
 clean:
 	docker compose down -v
 	rm -rf build .gradle server-data usersettings.jar
+
