@@ -1,9 +1,10 @@
 # UserSettings Configuration
 # Default settings for new players
-
-defaults:
+default-settings:
   keep-hotbar: false
   backpack-keep-mode: KEEP_NONE
   backpack-keep-count: 0
   exp-loss-type: ALL_LEVELS
   exp-loss-percentage: 100.0
+  keep-armor: false
+  armor-damage-percentage: 0.0

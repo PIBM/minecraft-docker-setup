@@ -1,10 +1,14 @@
 package ca.pebn.usersettings;
 
 import ca.pebn.usersettings.command.AdminCommand;
+import ca.pebn.usersettings.data.BackpackKeepMode;
+import ca.pebn.usersettings.data.ExpLossType;
+import ca.pebn.usersettings.data.UserSettingsData;
 import ca.pebn.usersettings.gui.GuiListener;
 import ca.pebn.usersettings.listener.DeathEventListener;
 import ca.pebn.usersettings.storage.PlayerSettingsManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class UserSettings extends JavaPlugin {
