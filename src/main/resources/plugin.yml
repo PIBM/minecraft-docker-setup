@@ -1,0 +1,13 @@
+name: usersettings
+version: '1.0-SNAPSHOT'
+main: ca.pebn.usersettings.UserSettings
+api-version: '26.2'
+description: UserSettings Paper 26.2 plugin for per-user death retention controls.
+author: Developer
+
+commands:
+  usersettings:
+    description: Admin command to edit per-user death settings.
+    aliases: [settings, deathsettings]
+    permission: usersettings.admin
+    permission-message: You do not have permission to use this command.

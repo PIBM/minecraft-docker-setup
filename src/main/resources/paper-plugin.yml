@@ -1,0 +1,11 @@
+name: usersettings
+version: '1.0-SNAPSHOT'
+main: ca.pebn.usersettings.UserSettings
+api-version: '26.2'
+description: UserSettings Paper 26.2 plugin for per-user death retention controls.
+author: Developer
+
+permissions:
+  usersettings.admin:
+    description: Allows access to edit player death settings via in-game editor GUI.
+    default: op
